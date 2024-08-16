@@ -72,7 +72,6 @@ ARG pip_dependencies=' \
       oauth2client \
       pandas \
       portpicker \
-      dm-reverb \
       tensorflow-datasets'
 
 ARG tensorflow_pip='tensorflow'

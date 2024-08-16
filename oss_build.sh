@@ -21,7 +21,7 @@ set -o pipefail
 cd "$(dirname "$0")"
 
 # Flags
-PYTHON_VERSIONS=3.8 # Options 3.8 (default)
+PYTHON_VERSIONS=3.10 # Options 3.8 (default)
 CLEAN=false # Set to true to run bazel clean.
 OUTPUT_DIR=/tmp/rlds/dist/
 INSTALL=true # Should the built package be installed.
@@ -73,13 +73,22 @@ for python_version in $PYTHON_VERSIONS; do
     bazel clean
   fi
 
-  if [ "$python_version" = "3.8" ]; then
-    export PYTHON_BIN_PATH=/usr/bin/python3.8 && export PYTHON_LIB_PATH=/usr/local/lib/python3.8/dist-packages
+  if [ "$python_version" = "3.7" ]; then
+    ABI=cp37
+  elif [ "$python_version" = "3.8" ]; then
     ABI=cp38
+  elif [ "$python_version" = "3.9" ]; then
+    ABI=cp39
+  elif [ "$python_version" = "3.10" ]; then
+    ABI=cp310
   else
-    echo "Error unknown --python. Only [3.8]"
+    echo "Error unknown --python. Only [3.7|3.8|3.9|3.10]"
     exit 1
   fi
+  
+
+  export PYTHON_BIN_PATH=`which python${python_version}`
+  export PYTHON_LIB_PATH=`${PYTHON_BIN_PATH} -c 'import site; print(site.getsitepackages()[0])'`
 
   # Configures Bazel environment for selected Python version.
   $PYTHON_BIN_PATH configure.py
@@ -106,7 +115,7 @@ for python_version in $PYTHON_VERSIONS; do
     echo "Run Python tests..."
     set +e
 
-    bash run_python_tests.sh |& tee ./unittest_log.txt
+    bash run_python_tests.sh 2>&1 tee ./unittest_log.txt
     UNIT_TEST_ERROR_CODE=$?
     set -e
     if [[ $UNIT_TEST_ERROR_CODE != 0 ]]; then

@@ -32,7 +32,6 @@ py_library(
         ":dataset_truncate",
         ":flexible_batch",
         ":nested_ops",
-        ":pattern",
         ":shape_ops",
     ],
 )
@@ -139,17 +138,6 @@ py_library(
         ":shape_ops",
         "//rlds:rlds_types",
         requirement("tensorflow"),
-    ],
-)
-
-py_library(
-    name = "pattern",
-    srcs = ["pattern.py"],
-    srcs_version = "PY3",
-    deps = [
-        "//rlds:rlds_types",
-        requirement("tensorflow"),
-        requirement("dm-reverb"),
     ],
 )
 
@@ -265,20 +253,5 @@ py_test(
         requirement("absl-py"),
         "//rlds:rlds_types",
         requirement("tensorflow"),
-    ],
-)
-
-py_test(
-    name = "pattern_test",
-    srcs = ["pattern_test.py"],
-    python_version = "PY3",
-    srcs_version = "PY3",
-    deps = [
-        ":pattern",
-        ":transformations_testlib",
-        requirement("absl-py"),
-        "//rlds:rlds_types",
-        requirement("tensorflow"),
-        requirement("dm-reverb"),
     ],
 )

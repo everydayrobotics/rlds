@@ -30,7 +30,7 @@ function build_wheel() {
   pushd ${TMPDIR} > /dev/null
 
   echo $(date) : "=== Building wheel"
-  "${PYTHON_BIN_PATH}" setup.py bdist_wheel ${PKG_NAME_FLAG} --plat manylinux2010_x86_64 > /dev/null
+  "${PYTHON_BIN_PATH}" setup.py bdist_wheel ${PKG_NAME_FLAG} > /dev/null
   DEST=${TMPDIR}/dist/
   if [[ ! "$TMPDIR" -ef "$DESTDIR" ]]; then
     mkdir -p ${DESTDIR}
@@ -55,7 +55,7 @@ function prepare_src() {
   cp LICENSE ${TMPDIR}
 
   # Copy all Python files.
-  cp --parents `find -name \*.py*` ${TMPDIR}
+  find . -name "*.py*" | tar cf - --files-from - --no-recursion | (cd ${TMPDIR} && tar xvf -)
   mv ${TMPDIR}/pip_package/setup.py ${TMPDIR}
   cp ./pip_package/MANIFEST.in ${TMPDIR}
   mv ${TMPDIR}/pip_package/rlds_version.py ${TMPDIR}
